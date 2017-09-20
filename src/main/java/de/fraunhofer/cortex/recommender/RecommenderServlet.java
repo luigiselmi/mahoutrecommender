@@ -67,7 +67,7 @@ public final class RecommenderServlet extends HttpServlet {
   @Override
   public void init(ServletConfig config) throws ServletException {
     super.init(config);
-    String recommenderClassName = "org.apache.mahout.cf.taste.example.grouplens.GroupLensRecommender";
+    String recommenderClassName = "de.fraunhofer.cortex.recommender.grouplens.GroupLensRecommender";
     //String recommenderClassName = config.getInitParameter("recommender-class");
     if (recommenderClassName == null) {
       throw new ServletException("Servlet init-param \"recommender-class\" is not defined");

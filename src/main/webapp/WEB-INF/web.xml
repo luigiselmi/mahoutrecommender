@@ -3,5 +3,26 @@
  "http://java.sun.com/dtd/web-app_2_3.dtd" >
 
 <web-app>
-  <display-name>Archetype Created Web Application</display-name>
+
+  <servlet>
+    <servlet-name>taste-recommender</servlet-name>
+    <display-name>Taste Recommender</display-name>
+    <description>Taste recommender servlet</description>
+    <servlet-class>de.fraunhofer.cortex.recommender.RecommenderServlet</servlet-class>
+    <init-param>
+      <param-name>recommender-class</param-name>
+      <param-value>de.fraunhofer.cortex.recommender.grouplens.GroupLensRecommender</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>taste-recommender</servlet-name>
+    <url-pattern>/RecommenderServlet</url-pattern>
+  </servlet-mapping>
+
+  <session-config>
+    <session-timeout>5</session-timeout>
+  </session-config>
+
 </web-app>

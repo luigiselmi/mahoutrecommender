@@ -39,17 +39,16 @@ public final class GroupLensDataModel extends FileDataModel {
   private static final String COLON_DELIMTER = "::";
   private static final Pattern COLON_DELIMITER_PATTERN = Pattern.compile(COLON_DELIMTER);
   
-  public GroupLensDataModel() throws IOException {
-    this(readResourceToTempFile("/ratings.dat"));
-  }
   
   /**
    * @param ratingsFile GroupLens ratings.dat file in its native format
    * @throws IOException if an error occurs while reading or writing files
    */
+  
   public GroupLensDataModel(File ratingsFile) throws IOException {
     super(convertGLFile(ratingsFile));
   }
+  
   
   private static File convertGLFile(File originalFile) throws IOException {
     // Now translate the file; remove commas, then convert "::" delimiter to comma
@@ -74,15 +73,16 @@ public final class GroupLensDataModel extends FileDataModel {
       resultFile.delete();
       throw ioe;
     } finally {
-      IOUtils.quietClose(writer);
+    	writer.close();
+      //IOUtils.quietClose(writer);
     }
     return resultFile;
   }
-
+  
   public static File readResourceToTempFile(String resourceName) throws IOException {
     InputSupplier<? extends InputStream> inSupplier;
     try {
-      URL resourceURL = Resources.getResource(GroupLensRecommender.class, resourceName);
+      URL resourceURL = Resources.getResource(GroupLensItemBasedRecommender.class, resourceName);
       inSupplier = Resources.newInputStreamSupplier(resourceURL);
     } catch (IllegalArgumentException iae) {
       File resourceFile = new File("src/main/resources" + resourceName);

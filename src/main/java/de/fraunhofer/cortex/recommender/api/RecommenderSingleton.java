@@ -15,10 +15,20 @@
  * limitations under the License.
  */
 
-package de.fraunhofer.cortex.recommender;
+package de.fraunhofer.cortex.recommender.api;
+
+import java.io.File;
+import java.io.IOException;
 
 import org.apache.mahout.cf.taste.common.TasteException;
+import org.apache.mahout.cf.taste.impl.model.file.FileDataModel;
+import org.apache.mahout.cf.taste.model.DataModel;
 import org.apache.mahout.cf.taste.recommender.Recommender;
+import org.apache.mahout.common.ClassUtils;
+
+import de.fraunhofer.cortex.recommender.generic.GenericRecommender;
+import de.fraunhofer.cortex.recommender.generic.SimpleDataModel;
+import de.fraunhofer.cortex.recommender.grouplens.GroupLensDataModel;
 
 /**
  * <p>A singleton which holds an instance of a {@link Recommender}. This is used to share
@@ -43,19 +53,12 @@ public final class RecommenderSingleton {
     }
   }
 
-  private RecommenderSingleton(String recommenderClassName) throws TasteException {
+  private RecommenderSingleton(String recommenderClassName) {
     if (recommenderClassName == null) {
       throw new IllegalArgumentException("Recommender class name is null");
-    }
-    try {
-      recommender = Class.forName(recommenderClassName).asSubclass(Recommender.class).newInstance();
-    } catch (ClassNotFoundException cnfe) {
-      throw new TasteException(cnfe);
-    } catch (InstantiationException ie) {
-      throw new TasteException(ie);
-    } catch (IllegalAccessException iae) {
-      throw new TasteException(iae);
-    }
+    }	
+    
+    recommender = ClassUtils.instantiateAs(recommenderClassName, Recommender.class);
   }
 
   public Recommender getRecommender() {

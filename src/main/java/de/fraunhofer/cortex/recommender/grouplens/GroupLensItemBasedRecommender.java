@@ -24,34 +24,38 @@ import java.util.List;
 import org.apache.mahout.cf.taste.common.Refreshable;
 import org.apache.mahout.cf.taste.common.TasteException;
 import org.apache.mahout.cf.taste.impl.recommender.CachingRecommender;
-import org.apache.mahout.cf.taste.impl.recommender.slopeone.SlopeOneRecommender;
+import org.apache.mahout.cf.taste.impl.recommender.GenericItemBasedRecommender;
+import org.apache.mahout.cf.taste.impl.recommender.GenericUserBasedRecommender;
+import org.apache.mahout.cf.taste.impl.similarity.CachingItemSimilarity;
+import org.apache.mahout.cf.taste.impl.similarity.CachingUserSimilarity;
+import org.apache.mahout.cf.taste.impl.similarity.LogLikelihoodSimilarity;
 import org.apache.mahout.cf.taste.model.DataModel;
 import org.apache.mahout.cf.taste.recommender.IDRescorer;
 import org.apache.mahout.cf.taste.recommender.RecommendedItem;
 import org.apache.mahout.cf.taste.recommender.Recommender;
+import org.apache.mahout.cf.taste.similarity.ItemSimilarity;
+import org.apache.mahout.cf.taste.similarity.UserSimilarity;
 
 /**
  * A simple {@link Recommender} implemented for the GroupLens demo.
  */
-public final class GroupLensRecommender implements Recommender {
+public final class GroupLensItemBasedRecommender implements Recommender {
   
   private final Recommender recommender;
-  
-  public GroupLensRecommender() throws IOException, TasteException {
-    this(new GroupLensDataModel());
-  }
-  
-  /**
+
+/**
    * <p>Alternate constructor that takes a {@link DataModel} argument, which allows this {@link Recommender}
    * to be used with the {@link org.apache.mahout.cf.taste.eval.RecommenderEvaluator} framework.</p>
    *
    * @param dataModel data model
    * @throws TasteException if an error occurs while initializing this
    */
-  public GroupLensRecommender(DataModel dataModel) throws TasteException {
-    recommender = new CachingRecommender(new SlopeOneRecommender(dataModel));
-  }
   
+  public GroupLensItemBasedRecommender(DataModel dataModel) throws TasteException {
+	  ItemSimilarity similarity = new CachingItemSimilarity(new LogLikelihoodSimilarity(dataModel), dataModel);
+	  recommender = new CachingRecommender(new GenericItemBasedRecommender(dataModel, similarity));
+  }
+ 
   @Override
   public List<RecommendedItem> recommend(long userID, int howMany) throws TasteException {
     return recommender.recommend(userID, howMany);
@@ -91,5 +95,17 @@ public final class GroupLensRecommender implements Recommender {
   public String toString() {
     return "GroupLensRecommender[recommender:" + recommender + ']';
   }
+
+@Override
+public List<RecommendedItem> recommend(long arg0, int arg1, boolean arg2) throws TasteException {
+	// TODO Auto-generated method stub
+	return null;
+}
+
+@Override
+public List<RecommendedItem> recommend(long arg0, int arg1, IDRescorer arg2, boolean arg3) throws TasteException {
+	// TODO Auto-generated method stub
+	return null;
+}
   
 }

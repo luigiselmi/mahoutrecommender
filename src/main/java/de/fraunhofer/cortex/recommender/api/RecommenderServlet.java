@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package de.fraunhofer.cortex.recommender;
+package de.fraunhofer.cortex.recommender.api;
 
 import org.apache.mahout.cf.taste.common.TasteException;
 import org.apache.mahout.cf.taste.model.DataModel;

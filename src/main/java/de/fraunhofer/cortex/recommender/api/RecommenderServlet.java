@@ -33,6 +33,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * <p>A servlet which returns recommendations, as its name implies. The servlet accepts GET and POST
@@ -59,6 +62,7 @@ import java.util.List;
  */
 public final class RecommenderServlet extends HttpServlet {
 
+  static final Logger LOG = LoggerFactory.getLogger(RecommenderServlet.class);
   private static final int NUM_TOP_PREFERENCES = 20;
   private static final int DEFAULT_HOW_MANY = 20;
 
@@ -95,7 +99,7 @@ public final class RecommenderServlet extends HttpServlet {
     if (format == null) {
       format = "text";
     }
-
+    LOG.info("userID = " + userID + ", howMany = " + howMany + ", format = " + format);
     try {
       List<RecommendedItem> items = recommender.recommend(userID, howMany);
       if ("text".equals(format)) {

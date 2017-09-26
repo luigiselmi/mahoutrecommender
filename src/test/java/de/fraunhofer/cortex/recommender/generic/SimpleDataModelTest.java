@@ -11,6 +11,7 @@ public class SimpleDataModelTest {
 	
 	private SimpleDataModel dataModel;
 	private File dataFile;
+	
 
 	@Before
 	public void setUp() throws Exception {

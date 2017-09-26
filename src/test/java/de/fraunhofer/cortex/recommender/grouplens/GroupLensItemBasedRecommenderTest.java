@@ -29,13 +29,9 @@ public class GroupLensItemBasedRecommenderTest {
 	@Test
 	public void testRecommendation() throws TasteException {
 		List<RecommendedItem> recommendations = recommender.recommend(1, 10);
-		Iterator<RecommendedItem> irec = recommendations.iterator();
-		while(irec.hasNext()) {
-			RecommendedItem recItem = irec.next();
-			System.out.println(recItem.toString());
-		}
-		
-		Assert.assertTrue(recommendations.get(0).getValue() > 4.677 );
+		RecommendedItem recommendation = recommendations.get(0);
+		long itemId = recommendation.getItemID();
+		Assert.assertTrue(itemId == 3890 );
 	}
 
 }

@@ -17,18 +17,11 @@
 
 package de.fraunhofer.cortex.recommender.api;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.apache.mahout.cf.taste.common.TasteException;
-import org.apache.mahout.cf.taste.impl.model.file.FileDataModel;
-import org.apache.mahout.cf.taste.model.DataModel;
 import org.apache.mahout.cf.taste.recommender.Recommender;
 import org.apache.mahout.common.ClassUtils;
-
-import de.fraunhofer.cortex.recommender.generic.GenericRecommender;
-import de.fraunhofer.cortex.recommender.generic.SimpleDataModel;
-import de.fraunhofer.cortex.recommender.grouplens.GroupLensDataModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>A singleton which holds an instance of a {@link Recommender}. This is used to share
@@ -36,6 +29,7 @@ import de.fraunhofer.cortex.recommender.grouplens.GroupLensDataModel;
  */
 public final class RecommenderSingleton {
 
+  static final Logger LOG = LoggerFactory.getLogger(RecommenderSingleton.class);
   private final Recommender recommender;
 
   private static RecommenderSingleton instance;
@@ -59,6 +53,7 @@ public final class RecommenderSingleton {
     }	
     
     recommender = ClassUtils.instantiateAs(recommenderClassName, Recommender.class);
+    LOG.info("Recommeder initialized");
   }
 
   public Recommender getRecommender() {

@@ -16,9 +16,12 @@ import org.apache.mahout.cf.taste.recommender.IDRescorer;
 import org.apache.mahout.cf.taste.recommender.RecommendedItem;
 import org.apache.mahout.cf.taste.recommender.Recommender;
 import org.apache.mahout.cf.taste.similarity.UserSimilarity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GenericRecommender implements Recommender {
 	
+	static final Logger LOG = LoggerFactory.getLogger(GenericRecommender.class);
 	private final Recommender recommender;
 	
 	public GenericRecommender() throws IOException, TasteException {
@@ -27,6 +30,7 @@ public class GenericRecommender implements Recommender {
 		UserSimilarity similarity = new PearsonCorrelationSimilarity(dataModel);
 		UserNeighborhood neighborhood = new NearestNUserNeighborhood(2, similarity, dataModel);
 		recommender = new GenericUserBasedRecommender(dataModel, neighborhood, similarity);
+		LOG.info("Recommender ready");
 		
 	}
 	
@@ -34,6 +38,7 @@ public class GenericRecommender implements Recommender {
 		  UserSimilarity similarity = new PearsonCorrelationSimilarity(dataModel);
 		  UserNeighborhood neighborhood = new NearestNUserNeighborhood(2, similarity, dataModel);
 		  recommender = new GenericUserBasedRecommender(dataModel, neighborhood, similarity);
+		  LOG.info("Recommender ready");
 	  }
 
 	@Override

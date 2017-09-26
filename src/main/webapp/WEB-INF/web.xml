@@ -8,10 +8,10 @@
     <servlet-name>taste-recommender</servlet-name>
     <display-name>Taste Recommender</display-name>
     <description>Taste recommender servlet</description>
-    <servlet-class>de.fraunhofer.cortex.recommender.RecommenderServlet</servlet-class>
+    <servlet-class>de.fraunhofer.cortex.recommender.api.RecommenderServlet</servlet-class>
     <init-param>
       <param-name>recommender-class</param-name>
-      <param-value>de.fraunhofer.cortex.recommender.grouplens.GroupLensRecommender</param-value>
+      <param-value>de.fraunhofer.cortex.recommender.generic.GenericRecommender</param-value>
     </init-param>
     <load-on-startup>1</load-on-startup>
   </servlet>

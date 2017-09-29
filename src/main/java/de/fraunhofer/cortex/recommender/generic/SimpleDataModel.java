@@ -15,7 +15,11 @@ public class SimpleDataModel extends FileDataModel {
 		super(transformFile(dataFile));
 		
 	}
-	
+	/**
+	 * This method returns a file with records: userID, itemID, value  
+	 * @param dataFile
+	 * @return
+	 */
 	private static File transformFile(File dataFile) {
 		LOG.info("Source data file transformed.");
 		return dataFile; //no transformation needed

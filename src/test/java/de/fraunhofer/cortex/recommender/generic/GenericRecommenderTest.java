@@ -6,7 +6,9 @@ import java.io.File;
 import java.util.List;
 
 import org.apache.mahout.cf.taste.common.TasteException;
+import org.apache.mahout.cf.taste.model.DataModel;
 import org.apache.mahout.cf.taste.recommender.RecommendedItem;
+import org.apache.mahout.cf.taste.recommender.Recommender;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -14,9 +16,9 @@ import junit.framework.Assert;
 
 public class GenericRecommenderTest {
 	
-	private SimpleDataModel dataModel;
+	private DataModel dataModel;
 	private File dataFile;
-	private GenericRecommender recommender;
+	private Recommender recommender;
 
 	@Before
 	public void setUp() throws Exception {
@@ -33,4 +35,14 @@ public class GenericRecommenderTest {
 		long recommendedItem = recommendation.getItemID();
 		Assert.assertTrue(recommendedItem == 104);
 	}
+	
+//	@Test
+//	public void testNumberOfUserIDs() throws TasteException {
+//		while(dataModel.getUserIDs().hasNext()){
+//			Long userID = recommender.getDataModel().getUserIDs().next();
+//			List<RecommendedItem> recommendations = recommender.recommend(userID, 1);
+//			if(!recommendations.isEmpty())
+//				System.out.println("User " + userID + " has recommendations");
+//		}
+//	}
 }

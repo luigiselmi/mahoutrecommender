@@ -6,7 +6,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,10 +35,11 @@ public class AtnFileDataModel extends FileDataModel {
 	
 	/**
 	 * This method returns a file with records: userID, itemID, value
-	 * 1) Read the records from the file and build a collectiont 
+	 * 1) Read the records from the file and build a collection 
 	 * 2) Group the records by a key (userID and itemID).
 	 *    The number of records per key counts as feedbacks
-	 * 3) Optional - Map the source_itemID (string) to a target item id (numeric)
+	 * 3) Map the itemID, a string, to numeric id
+	 *    Apache Mahout requires both userID and itemID as non-negative numeric values
 	 * 4) Create a file of feedbacks: userID, itemID, feedbacks value
 	 * 5) Return the aggregated set of records 
 	 * @param dataFile
@@ -46,11 +49,16 @@ public class AtnFileDataModel extends FileDataModel {
 		File transformedFile = null;
 		LOG.info("Transforming source data file.");
 		List<Record> records = readRecords(dataFile);
-		List<Feedback> feedbacks = groupRecordsByKey(records);
+		List<Feedback> feedbacks = hashItemID(groupRecordsByKey(records));
 		transformedFile = createTransformedFile(feedbacks);
 		return transformedFile;
 	}
-	
+	/**
+	 * Read the records from the file and build a collection
+	 * @param dataFile
+	 * @return
+	 * @throws IOException
+	 */
 	public static List<Record> readRecords(File dataFile) throws IOException {
 		List<Record> records = new ArrayList<Record>();
 		FileLineIterable fileIterable = new FileLineIterable(dataFile, false);
@@ -66,7 +74,12 @@ public class AtnFileDataModel extends FileDataModel {
 		
 		return records;
 	}
-	
+	/**
+	 * Group the records by a key (userID and itemID). The number of records per key counts as feedbacks.
+	 * @param records
+	 * @return
+	 * @throws IOException
+	 */
 	public static List<Feedback> groupRecordsByKey(List<Record> records) throws IOException {
 		List<Feedback> feedbacks = new ArrayList<Feedback>();
 		Map<String, List<Record>> recordsByKey = records.stream()
@@ -84,7 +97,41 @@ public class AtnFileDataModel extends FileDataModel {
 		return feedbacks;
 		
 	}
+	/**
+	 * Returns the feedbacks with the itemID hash coded
+	 * @param feedbacks
+	 * @return
+	 */
+	public static List<Feedback> hashItemID(List<Feedback> feedbacks) {
+		List<Feedback> hashFeedbacks = new ArrayList<Feedback>();
+		int listSize = feedbacks.size();
+		for (Feedback f: feedbacks){
+			Feedback hashFeedback = new Feedback();
+			int hashItemID = hashCode(f.getItemId(), listSize);
+			hashFeedback.setFeedbacks(f.getFeedbacks());
+			hashFeedback.setUserId(f.getUserId());
+			hashFeedback.setItemId(Integer.toString(hashItemID));
+			hashFeedbacks.add(hashFeedback);
+		}
+		return hashFeedbacks;
+	}
+	/**
+	 * Compute a non-negative hash code
+	 * @param idString
+	 * @param size
+	 * @return
+	 */
+	public static int hashCode(String idString, int size) {
+		return (idString.hashCode() & 0x7FFFFFFF) % size;
+	}
 	
+	
+	/**
+	 * Create a file of feedbacks: userID, itemID, feedbacks value.
+	 * @param feedbacks
+	 * @return
+	 * @throws FileNotFoundException
+	 */
 	public static File createTransformedFile(List<Feedback> feedbacks) throws FileNotFoundException {
 		File resultFile = new File(new File(System.getProperty("java.io.tmpdir")), "feedbacks.txt");
 	    if (resultFile.exists()) {
@@ -92,7 +139,7 @@ public class AtnFileDataModel extends FileDataModel {
 	    }
 	    PrintWriter writer = new PrintWriter(new FileOutputStream(resultFile));
 	    for (Feedback f: feedbacks) {
-	    	writer.write(f.getUserId() + "," + f.getItemId() + "," + f.getFeedbacks());
+	    	writer.println(f.getUserId() + "," + f.getItemId() + "," + f.getFeedbacks());
 	    }
 	    writer.flush();
 	    writer.close();

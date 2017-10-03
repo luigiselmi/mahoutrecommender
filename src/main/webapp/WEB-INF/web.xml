@@ -11,7 +11,7 @@
     <servlet-class>de.fraunhofer.cortex.recommender.api.RecommenderServlet</servlet-class>
     <init-param>
       <param-name>recommender-class</param-name>
-      <param-value>de.fraunhofer.cortex.recommender.generic.GenericRecommender</param-value>
+      <param-value>de.fraunhofer.cortex.recommender.atn.AtnRecommender</param-value>
     </init-param>
     <load-on-startup>1</load-on-startup>
   </servlet>

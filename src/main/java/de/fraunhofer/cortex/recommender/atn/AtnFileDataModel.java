@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -27,7 +28,7 @@ public class AtnFileDataModel extends FileDataModel {
 	private static final String COLON_DELIMTER = ",";
 	private static final Pattern COLON_DELIMITER_PATTERN = Pattern.compile(COLON_DELIMTER);
 	static final Logger LOG = LoggerFactory.getLogger(AtnFileDataModel.class);
-
+	private static Map<Long, String> mapItemIDs = null;
 	public AtnFileDataModel(File dataFile) throws IOException {
 		super(transformFile(dataFile));
 		
@@ -49,8 +50,10 @@ public class AtnFileDataModel extends FileDataModel {
 		File transformedFile = null;
 		LOG.info("Transforming source data file.");
 		List<Record> records = readRecords(dataFile);
-		List<Feedback> feedbacks = hashItemID(groupRecordsByKey(records));
-		transformedFile = createTransformedFile(feedbacks);
+		List<Feedback> feedbacks = groupRecordsByKey(records);
+		mapItemID(feedbacks);
+		List<Feedback> hashFeedbacks = hashItemID(feedbacks);
+		transformedFile = createTransformedFile(hashFeedbacks);
 		return transformedFile;
 	}
 	/**
@@ -75,7 +78,8 @@ public class AtnFileDataModel extends FileDataModel {
 		return records;
 	}
 	/**
-	 * Group the records by a key (userID and itemID). The number of records per key counts as feedbacks.
+	 * Group the records by a key (userID and itemID). The number of records 
+	 * per key counts as feedbacks.
 	 * @param records
 	 * @return
 	 * @throws IOException
@@ -85,11 +89,9 @@ public class AtnFileDataModel extends FileDataModel {
 		Map<String, List<Record>> recordsByKey = records.stream()
 										.collect(Collectors.groupingBy(Record::getRecordKey));
 		for (String key: recordsByKey.keySet()) {
-			Feedback feedback = new Feedback();
 			List<Record> groupRecords = recordsByKey.get(key);
 			Record record = groupRecords.get(0);
-			feedback.setUserId(record.getUserID());
-			feedback.setItemId(record.getItemID());
+			Feedback feedback = new Feedback(record.getUserID(), record.getItemID());
 			feedback.setFeedbacks(groupRecords.size());
 			feedbacks.add(feedback);
 		}
@@ -106,11 +108,9 @@ public class AtnFileDataModel extends FileDataModel {
 		List<Feedback> hashFeedbacks = new ArrayList<Feedback>();
 		int listSize = feedbacks.size();
 		for (Feedback f: feedbacks){
-			Feedback hashFeedback = new Feedback();
 			int hashItemID = hashCode(f.getItemId(), listSize);
+			Feedback hashFeedback = new Feedback(f.getUserId(), Integer.toString(hashItemID));
 			hashFeedback.setFeedbacks(f.getFeedbacks());
-			hashFeedback.setUserId(f.getUserId());
-			hashFeedback.setItemId(Integer.toString(hashItemID));
 			hashFeedbacks.add(hashFeedback);
 		}
 		return hashFeedbacks;
@@ -123,6 +123,24 @@ public class AtnFileDataModel extends FileDataModel {
 	 */
 	public static int hashCode(String idString, int size) {
 		return (idString.hashCode() & 0x7FFFFFFF) % size;
+	}
+	/**
+	 * Returns a map between the hash coded itemID and the original itemID
+	 * @param feedbacks
+	 * @return
+	 */
+	public static void mapItemID(List<Feedback> feedbacks) {
+		mapItemIDs = new TreeMap<Long, String>();
+		int listSize = feedbacks.size();
+		for (Feedback f: feedbacks){
+		  long hashItemIDStr = hashCode(f.getItemId(), listSize);
+	      mapItemIDs.put(hashItemIDStr, f.getItemId());	
+		}
+		//Collectors.sort(mapItemIDs);
+	}
+	
+	public static Map<Long, String> getMapItemID(){
+		return mapItemIDs;
 	}
 	
 	

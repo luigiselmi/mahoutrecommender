@@ -25,10 +25,11 @@ public class AtnRecommender implements Recommender {
 	
 	static final Logger LOG = LoggerFactory.getLogger(AtnRecommender.class);
 	private final Recommender recommender;
+	private AtnFileDataModel dataModel;
 	
 	public AtnRecommender() throws IOException, TasteException {
 		File dataFile = new File(this.getClass().getClassLoader().getResource("feedback.csv").getFile());
-		AtnFileDataModel dataModel = new AtnFileDataModel(dataFile);
+		dataModel = new AtnFileDataModel(dataFile);
 		UserSimilarity similarity = new PearsonCorrelationSimilarity(dataModel);
 		UserNeighborhood neighborhood = new NearestNUserNeighborhood(2, similarity, dataModel);
 		recommender = new GenericUserBasedRecommender(dataModel, neighborhood, similarity);

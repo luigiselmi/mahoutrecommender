@@ -63,5 +63,18 @@ public class AtnFileDataModelTest {
 		Assert.assertEquals(29, hashItemID);
 	}
 	
+	@Test
+	public void testGetMapItemID() throws IOException {
+		List<Feedback> feedbacks = AtnFileDataModel.groupRecordsByKey(records);
+		AtnFileDataModel.mapItemID(feedbacks);
+		Map<Long, String> mapItemIDs = AtnFileDataModel.getMapItemID();
+		for(Long hash: mapItemIDs.keySet()) {
+			System.out.println(hash + ", " + mapItemIDs.get(hash));
+		}
+		String itemID = mapItemIDs.get(new Long(29));
+		Assert.assertTrue("51eb5154-f55f-4c4e-b8e8-0f8902084350".equals(itemID));
+		
+	}
+	
 	
 }

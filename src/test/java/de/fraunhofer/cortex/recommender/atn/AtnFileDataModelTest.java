@@ -15,11 +15,13 @@ public class AtnFileDataModelTest {
 	
 	private File dataFile;
 	private List<Record> records;
+	private AtnFileDataModel dataModel;
 
 	@Before
 	public void setUp() throws Exception {
 		dataFile = new File(this.getClass().getClassLoader().getResource("feedback.csv").getFile());
-		records = AtnFileDataModel.readRecords(dataFile);
+		dataModel = new AtnFileDataModel(dataFile);
+		records = dataModel.readRecords(dataFile);
 	}
 
 	@Test
@@ -40,20 +42,8 @@ public class AtnFileDataModelTest {
 	@Test
 	public void testAggregateRecords() throws IOException {
 		List<Feedback> feedbacks = AtnFileDataModel.groupRecordsByKey(records);
-//		for (Feedback feedback: feedbacks) {
-//			System.out.println(feedback.getUserId() + " " + feedback.getItemId() + " " + feedback.getFeedbacks());
-//		}
+
 		Assert.assertTrue(feedbacks.size() > 11);
-	}
-	
-	@Test
-	public void testHashItemID() throws IOException {
-		List<Feedback> feedbacks = AtnFileDataModel.groupRecordsByKey(records);
-		List<Feedback> hashfeedbacks = AtnFileDataModel.hashItemID(feedbacks);
-//		for (Feedback feedback: hashfeedbacks) {
-//			System.out.println(feedback.getUserId() + " " + feedback.getItemId() + " " + feedback.getFeedbacks());
-//		}
-		
 	}
 	
 	@Test
@@ -67,7 +57,7 @@ public class AtnFileDataModelTest {
 	public void testGetMapItemID() throws IOException {
 		List<Feedback> feedbacks = AtnFileDataModel.groupRecordsByKey(records);
 		AtnFileDataModel.mapItemID(feedbacks);
-		Map<Long, String> mapItemIDs = AtnFileDataModel.getMapItemID();
+		Map<Long, String> mapItemIDs = dataModel.getMapItemID();
 		for(Long hash: mapItemIDs.keySet()) {
 			System.out.println(hash + ", " + mapItemIDs.get(hash));
 		}

@@ -95,5 +95,9 @@ public class AtnRecommender implements Recommender {
 	public DataModel getDataModel() {
 		return recommender.getDataModel();
 	}
+	
+	public AtnFileDataModel getAtnFileDataModel() {
+		return dataModel;
+	}
 
 }

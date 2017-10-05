@@ -28,7 +28,8 @@ public class AtnFileDataModel extends FileDataModel {
 	private static final String COLON_DELIMTER = ",";
 	private static final Pattern COLON_DELIMITER_PATTERN = Pattern.compile(COLON_DELIMTER);
 	static final Logger LOG = LoggerFactory.getLogger(AtnFileDataModel.class);
-	private static Map<Long, String> mapItemIDs = null;
+	public static Map<Long, String> mapItemIDs = null;
+	
 	public AtnFileDataModel(File dataFile) throws IOException {
 		super(transformFile(dataFile));
 		
@@ -108,8 +109,8 @@ public class AtnFileDataModel extends FileDataModel {
 		List<Feedback> hashFeedbacks = new ArrayList<Feedback>();
 		int listSize = feedbacks.size();
 		for (Feedback f: feedbacks){
-			int hashItemID = hashCode(f.getItemId(), listSize);
-			Feedback hashFeedback = new Feedback(f.getUserId(), Integer.toString(hashItemID));
+			int hashItemID = hashCode(f.getItemID(), listSize);
+			Feedback hashFeedback = new Feedback(f.getUserID(), Integer.toString(hashItemID));
 			hashFeedback.setFeedbacks(f.getFeedbacks());
 			hashFeedbacks.add(hashFeedback);
 		}
@@ -133,13 +134,13 @@ public class AtnFileDataModel extends FileDataModel {
 		mapItemIDs = new TreeMap<Long, String>();
 		int listSize = feedbacks.size();
 		for (Feedback f: feedbacks){
-		  long hashItemIDStr = hashCode(f.getItemId(), listSize);
-	      mapItemIDs.put(hashItemIDStr, f.getItemId());	
+		  long hashItemIDStr = hashCode(f.getItemID(), listSize);
+	      mapItemIDs.put(hashItemIDStr, f.getItemID());	
 		}
 		//Collectors.sort(mapItemIDs);
 	}
 	
-	public static Map<Long, String> getMapItemID(){
+	public Map<Long, String> getMapItemID(){
 		return mapItemIDs;
 	}
 	
@@ -157,7 +158,7 @@ public class AtnFileDataModel extends FileDataModel {
 	    }
 	    PrintWriter writer = new PrintWriter(new FileOutputStream(resultFile));
 	    for (Feedback f: feedbacks) {
-	    	writer.println(f.getUserId() + "," + f.getItemId() + "," + f.getFeedbacks());
+	    	writer.println(f.getUserID() + "," + f.getItemID() + "," + f.getFeedbacks());
 	    }
 	    writer.flush();
 	    writer.close();

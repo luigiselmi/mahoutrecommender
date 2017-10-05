@@ -23,6 +23,8 @@ import org.apache.mahout.common.ClassUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.fraunhofer.cortex.recommender.atn.AtnRecommender;
+
 /**
  * <p>A singleton which holds an instance of a {@link Recommender}. This is used to share
  * a {@link Recommender} between {@link RecommenderServlet} and {@code RecommenderService.jws}.</p>
@@ -52,7 +54,7 @@ public final class RecommenderSingleton {
       throw new IllegalArgumentException("Recommender class name is null");
     }	
     
-    recommender = ClassUtils.instantiateAs(recommenderClassName, Recommender.class);
+    recommender = ClassUtils.instantiateAs(recommenderClassName, AtnRecommender.class);
     LOG.info("Recommeder initialized");
   }
 

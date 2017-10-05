@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.mahout.cf.taste.common.TasteException;
 import org.apache.mahout.cf.taste.model.DataModel;
@@ -30,19 +31,9 @@ public class AtnRecommenderTest {
 	@Test
 	public void testRecommendations() throws TasteException {
 		System.out.println("Number of users: " + dataModel.getNumUsers());
-		
 		System.out.println("Number of items: " + dataModel.getNumItems());
-		
 		System.out.println("Number of users with preferences for 29: " + dataModel.getNumUsersWithPreferenceFor(29));
 		System.out.println("Number of preferences for 29: " + dataModel.getPreferencesForItem(29));
-		
-//		int userCount = 0;
-//		while(dataModel.getUserIDs().hasNext()){
-//			Long userID = recommender.getDataModel().getUserIDs().next();
-//			userCount += 1;
-//			System.out.println(userCount + " userID: " + userID);
-//		}
-//		System.out.println("Number of users: " + userCount);
 	
 		List<RecommendedItem> recommendations = recommender.recommend(21819, 1);
 		for(RecommendedItem i: recommendations){
@@ -51,6 +42,13 @@ public class AtnRecommenderTest {
 			System.out.println("Recommended item: " + recommendedItemID + " value: " + value);
 		}
 	
+	}
+	
+	@Test
+	public void testItemIDs(){
+		Map<Long, String> mapHashToItemID = ((AtnFileDataModel) recommender.getDataModel()).getMapItemID();
+		String itemID = mapHashToItemID.get(new Long(67));
+		Assert.assertTrue("40526f54-3c60-4d87-9628-368524cff90c".equals(itemID));
 	}
 
 }

@@ -11,16 +11,33 @@
     <servlet-class>de.fraunhofer.cortex.recommender.api.RecommenderServlet</servlet-class>
     <init-param>
       <param-name>recommender-class</param-name>
-      <param-value>de.fraunhofer.cortex.recommender.atn.AtnRecommender</param-value>
+      <param-value>de.fraunhofer.cortex.recommender.generic.GenericRecommender</param-value>
     </init-param>
     <load-on-startup>1</load-on-startup>
   </servlet>
 
+  <servlet>
+    <servlet-name>atn-recommender</servlet-name>
+    <display-name>ATN Recommender</display-name>
+    <description>ATN recommender servlet</description>
+    <servlet-class>de.fraunhofer.cortex.recommender.api.AtnRecommenderServlet</servlet-class>
+    <init-param>
+      <param-name>recommender-class</param-name>
+      <param-value>de.fraunhofer.cortex.recommender.atn.AtnRecommender</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  
   <servlet-mapping>
     <servlet-name>taste-recommender</servlet-name>
     <url-pattern>/RecommenderServlet</url-pattern>
   </servlet-mapping>
-
+  
+  <servlet-mapping>
+    <servlet-name>atn-recommender</servlet-name>
+    <url-pattern>/AtnRecommenderServlet</url-pattern>
+  </servlet-mapping>
+  
   <session-config>
     <session-timeout>5</session-timeout>
   </session-config>

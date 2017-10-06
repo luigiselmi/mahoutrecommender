@@ -6,6 +6,11 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
+
 import org.apache.mahout.cf.taste.common.TasteException;
 import org.apache.mahout.cf.taste.model.DataModel;
 import org.apache.mahout.cf.taste.recommender.RecommendedItem;
@@ -35,13 +40,30 @@ public class AtnRecommenderTest {
 		System.out.println("Number of users with preferences for 29: " + dataModel.getNumUsersWithPreferenceFor(29));
 		System.out.println("Number of preferences for 29: " + dataModel.getPreferencesForItem(29));
 	
-		List<RecommendedItem> recommendations = recommender.recommend(21819, 1);
+		List<RecommendedItem> recommendations = recommender.recommend(20159, 2);
 		for(RecommendedItem i: recommendations){
 			long recommendedItemID = i.getItemID();
 			float value = i.getValue();
 			System.out.println("Recommended item: " + recommendedItemID + " value: " + value);
 		}
 	
+	}
+	
+	@Test
+	public void testJsonRecommendations() throws TasteException {
+		List<RecommendedItem> recommendations = recommender.recommend(20159, 2);
+		JsonArrayBuilder jrecommendations = Json.createArrayBuilder();
+		for(RecommendedItem ri: recommendations){
+			JsonObject jrecommendation = Json.createObjectBuilder()
+		    		  .add("itemID", ri.getItemID())
+		    		  .add("value", ri.getValue())
+		    		  .build();
+			jrecommendations.add(jrecommendation);	  	
+		}
+		JsonObject jrecommendedItems = Json.createObjectBuilder()
+				.add("recommendedItems", jrecommendations).build();
+		System.out.println(jrecommendedItems.toString());
+		
 	}
 	
 	@Test

@@ -24,6 +24,10 @@ import org.apache.mahout.cf.taste.model.PreferenceArray;
 import org.apache.mahout.cf.taste.recommender.RecommendedItem;
 import org.apache.mahout.cf.taste.recommender.Recommender;
 
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -32,15 +36,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import de.fraunhofer.cortex.recommender.atn.AtnFileDataModel;
 import de.fraunhofer.cortex.recommender.atn.AtnRecommender;
 
 
@@ -148,21 +147,32 @@ public final class AtnRecommenderServlet extends HttpServlet {
     }
     writer.println("</recommendedItems>");
   }
-
+  
   private void writeJSON(HttpServletResponse response, Iterable<RecommendedItem> items) throws IOException {
     response.setContentType("text/plain");
     response.setCharacterEncoding("UTF-8");
     response.setHeader("Cache-Control", "no-cache");
     PrintWriter writer = response.getWriter();
-    writer.print("{\"recommendedItems\":{\"item\":[");
-    for (RecommendedItem recommendedItem : items) {
-      writer.print("{\"value\":\"");
-      writer.print(recommendedItem.getValue());
-      writer.print("\",\"id\":\"");
-      writer.print(mapItemIDs.get(new Long(recommendedItem.getItemID())));
-      writer.print("\"},");
-    }
-    writer.println("]}}");
+    
+    writer.println(jsonRecommendedItem(items));
+  }
+  /**
+   * Serialize the list of recommended items in json 
+   * @param items
+   * @return
+   */
+  private String jsonRecommendedItem(Iterable<RecommendedItem> items) {
+	JsonArrayBuilder jrecommendations = Json.createArrayBuilder();
+	for(RecommendedItem ri: items){
+		JsonObject jrecommendation = Json.createObjectBuilder()
+	    		  .add("itemID", mapItemIDs.get(new Long(ri.getItemID())))
+	    		  .add("value", ri.getValue())
+	    		  .build();
+		jrecommendations.add(jrecommendation);	  	
+	}
+	JsonObject jrecommendedItems = Json.createObjectBuilder()
+			.add("recommendedItems", jrecommendations).build();    
+    return jrecommendedItems.toString();
   }
   
   private void writePlainText(HttpServletResponse response,

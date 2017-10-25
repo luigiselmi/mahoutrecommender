@@ -16,7 +16,7 @@ The recommender is a web service and it must be packaged as a war file and insta
     $ mvn install
 
 ## Run
-In case Jetty is used as a servlet container you can create a base for Jetty, as explained in the Jetty documentation <add link> and copy the war file in the webapps folder. From the Jetty base folder execute the command
+In case Jetty is used as a servlet container you can create a base for Jetty, as explained in the [Jetty documentation](https://www.eclipse.org/jetty/documentation/current/quickstart-running-jetty.html) and copy the war file in the webapps folder. From the Jetty base folder execute the command
 
     $ java -jar $JETTY_HOME/start.jar
     

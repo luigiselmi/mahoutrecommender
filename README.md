@@ -16,13 +16,18 @@ The recommender is a web service and it must be packaged as a war file and insta
     $ mvn install
 
 ## Run
-In case Jetty is used as a servlet container you can create a base for Jetty, as explained in the [Jetty documentation](https://www.eclipse.org/jetty/documentation/current/quickstart-running-jetty.html) and copy the war file in the webapps folder. From the Jetty base folder execute the command
+In case Jetty is used as a servlet container you can create a base for Jetty, as explained in the [Jetty documentation](https://www.eclipse.org/jetty/documentation/current/quickstart-running-jetty.html), and copy the war file in the webapps folder. You can rename the war file as ROOT.war so you will not need to use a context. From the Jetty base folder execute the command
 
     $ java -jar $JETTY_HOME/start.jar
-    
+
+## Use
+You can send a request to the web service using the HTML page at http://localhost:8080/ with the id of the user for which you want the recommendation and the number of items to recommend.
+
 ## Version
 0.0.1
+
 ## Troubleshooting
 None
+
 ## License
 Apache 2.0

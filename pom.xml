@@ -5,8 +5,8 @@
   <artifactId>recommender</artifactId>
   <packaging>war</packaging>
   <version>0.0.1-SNAPSHOT</version>
-  <name>recommender Maven Webapp</name>
-  <url>http://maven.apache.org</url>
+  <name>Recommender Webapp</name>
+  <url>http://datiaperti.it</url>
   <dependencies>
     <dependency>
     <groupId>org.apache.mahout</groupId>
@@ -59,7 +59,7 @@
     </dependency>
   </dependencies>
   <build>
-    <finalName>recommender</finalName>
+    <finalName>doeeetrecommender</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

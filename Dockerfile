@@ -65,8 +65,5 @@ RUN wget http://central.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.
     mkdir jetty && \
     mv /tmp/jetty-distribution-9.4.7.v20170914 /opt/frameworks/jetty/jetty-9.4.7
 
-# Start doeeet recommender
-#COPY start_fuhsen.sh /home/lidakra/fuhsen-1.1.0
-WORKDIR /opt/frameworks/jetty/jetty-9.4.7
-#RUN ["chmod", "u+x", "start_fuhsen.sh"]
+# Start the doeeet recommender
 CMD java -jar start.jar

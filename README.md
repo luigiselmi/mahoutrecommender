@@ -36,7 +36,7 @@ and then running it
 You can send a request to the web service using the HTML page at http://localhost:8080/ with the id of the user for which you want the recommendation and the number of items to recommend.
 
 ## Version
-0.0.1
+0.1.0
 
 ## Troubleshooting
 None

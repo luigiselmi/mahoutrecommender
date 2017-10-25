@@ -21,7 +21,7 @@ You can run the recommender as a Java Web application in a servlet container suc
 ### Java Web Application
 In case Jetty is used as a servlet container you can create a base for Jetty, as explained in the [Jetty documentation](https://www.eclipse.org/jetty/documentation/current/quickstart-running-jetty.html), and copy the war file in the webapps folder. You can rename the war file as ROOT.war so you will not need to use a context. From the Jetty base folder execute the command
 
-    $ java -jar $JETTY_HOME/start.jar
+    $ java -jar $JETTY_HOME/start.jar jetty.http.port=8100
 
 ### Docker container
 You can run the recommender within a docker container by first building the container 

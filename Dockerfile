@@ -74,4 +74,4 @@ COPY target/doeeetrecommender.war /opt/frameworks/jetty/jetty-9.4.7/webapps/ROOT
 
 # Start the doeeet recommender
 WORKDIR /opt/frameworks/jetty/jetty-9.4.7
-CMD java -jar start.jar
+CMD java -jar start.jar jetty.http.port=8100

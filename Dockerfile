@@ -12,13 +12,17 @@
 #
 #    $ docker run -it -p 8100:8100 --name recommender doeeet/recommender:v0.1.0 /bin/bash 
 #
-# 5) Within the container check that the application is well installed
+# 4) Within the container check that the application is well installed
 #
-# 6) Detach from the container with Ctrl-p Ctrl-q
+# 5) Detach from the container with Ctrl-p Ctrl-q
 #
-# The container can be started in detached mode executing the command
+# 6) The container can be started in detached mode executing the command
 #
-# $ docker run -d -p 8100:8100 --network=doeeet-net --name recommender doeeet/recommender:v0.1.0
+#    $ docker run -d -p 8100:8100 --network=doeeet-net --name recommender doeeet/recommender:v0.1.0
+#
+# 7) The container can be inspected using the command
+#
+#    $ docker exec -it recommender /bin/bash
 
 
 # Pull base image
@@ -65,5 +69,9 @@ RUN wget http://central.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.
     mkdir jetty && \
     mv /tmp/jetty-distribution-9.4.7.v20170914 /opt/frameworks/jetty/jetty-9.4.7
 
+# Install the recommender web application
+COPY target/doeeetrecommender.war /opt/frameworks/jetty/jetty-9.4.7/webapps/ROOT.war
+
 # Start the doeeet recommender
+WORKDIR /opt/frameworks/jetty/jetty-9.4.7
 CMD java -jar start.jar

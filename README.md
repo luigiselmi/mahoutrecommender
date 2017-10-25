@@ -16,9 +16,21 @@ The recommender is a web service and it must be packaged as a war file and insta
     $ mvn install
 
 ## Run
+You can run the recommender as a Java Web application in a servlet container such as Jetty or in a docker container.
+
+### Java Web Application
 In case Jetty is used as a servlet container you can create a base for Jetty, as explained in the [Jetty documentation](https://www.eclipse.org/jetty/documentation/current/quickstart-running-jetty.html), and copy the war file in the webapps folder. You can rename the war file as ROOT.war so you will not need to use a context. From the Jetty base folder execute the command
 
     $ java -jar $JETTY_HOME/start.jar
+
+### Docker container
+You can run the recommender within a docker container by first building the container 
+
+    $ docker build -t doeeet/recommender:v0.1.0 .
+
+and then running it
+
+    $ docker run -it -p 8100:8100 --name recommender doeeet/recommender:v0.1.0
 
 ## Use
 You can send a request to the web service using the HTML page at http://localhost:8080/ with the id of the user for which you want the recommendation and the number of items to recommend.

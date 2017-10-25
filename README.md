@@ -33,7 +33,7 @@ and then running it
     $ docker run -it -p 8100:8100 --name recommender doeeet/recommender:v0.1.0
 
 ## Use
-You can send a request to the web service using the HTML page at http://localhost:8080/ with the id of the user for which you want the recommendation and the number of items to recommend.
+You can send a request to the web service using the HTML page at http://localhost:8100/ with the id of the user for which you want the recommendation and the number of items to recommend.
 
 ## Version
 0.1.0

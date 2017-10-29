@@ -35,7 +35,7 @@
   
   <servlet-mapping>
     <servlet-name>atn-recommender</servlet-name>
-    <url-pattern>/AtnRecommenderServlet</url-pattern>
+    <url-pattern>/recommend</url-pattern>
   </servlet-mapping>
   
   <session-config>

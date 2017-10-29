@@ -18,11 +18,15 @@
 #
 # 6) The container can be started in detached mode executing the command
 #
-#    $ docker run -d -p 8100:8100 --network=doeeet-net --name recommender doeeet/recommender:v0.1.0
+#    $ docker run -d -p 8100:8100 --name recommender doeeet/recommender:v0.1.0
 #
 # 7) The container can be inspected using the command
 #
 #    $ docker exec -it recommender /bin/bash
+#
+# 8) In order to run the container in a network (e.g. doeeet-net) use the command
+#
+#    docker run -d -p 8100:8100 --network=doeeet-net --name recommender doeeet/recommender:v0.1.0
 
 
 # Pull base image

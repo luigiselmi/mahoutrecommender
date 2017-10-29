@@ -149,7 +149,7 @@ public final class AtnRecommenderServlet extends HttpServlet {
   }
   
   private void writeJSON(HttpServletResponse response, Iterable<RecommendedItem> items) throws IOException {
-    response.setContentType("text/plain");
+    response.setContentType("application/json");
     response.setCharacterEncoding("UTF-8");
     response.setHeader("Cache-Control", "no-cache");
     PrintWriter writer = response.getWriter();

@@ -30,7 +30,7 @@ You can run the recommender within a docker container by first building the cont
 
 and then running it
 
-    $ docker run -it -p 8100:8100 --name recommender doeeet/recommender:v0.1.0
+    $ docker run -d -p 8100:8100 --name recommender doeeet/recommender:v0.1.0
 
 ## Use
 You can send a request to the web service using the HTML page at http://localhost:8100/ with the id of the user for which you want the recommendation and the number of items to recommend.

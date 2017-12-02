@@ -27,7 +27,6 @@ import org.apache.mahout.cf.taste.recommender.Recommender;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -120,7 +119,7 @@ public final class AtnRecommenderServlet extends HttpServlet {
       } else if ("xml".equals(format)) {
         writeXML(response, items);
       } else if ("json".equals(format)) {
-        writeJSON(response, items);
+        writeJSON(userID, response, items);
       } else {
         throw new ServletException("Bad format parameter: " + format);
       }
@@ -148,20 +147,20 @@ public final class AtnRecommenderServlet extends HttpServlet {
     writer.println("</recommendedItems>");
   }
   
-  private void writeJSON(HttpServletResponse response, Iterable<RecommendedItem> items) throws IOException {
+  private void writeJSON(long userID, HttpServletResponse response, Iterable<RecommendedItem> items) throws IOException {
     response.setContentType("application/json");
     response.setCharacterEncoding("UTF-8");
     response.setHeader("Cache-Control", "no-cache");
     PrintWriter writer = response.getWriter();
     
-    writer.println(jsonRecommendedItem(items));
+    writer.println(jsonRecommendedItem(userID, items));
   }
   /**
    * Serialize the list of recommended items in json 
    * @param items
    * @return
    */
-  private String jsonRecommendedItem(Iterable<RecommendedItem> items) {
+  private String jsonRecommendedItem(long userID, Iterable<RecommendedItem> items) {
 	JsonArrayBuilder jrecommendations = Json.createArrayBuilder();
 	for(RecommendedItem ri: items){
 		JsonObject jrecommendation = Json.createObjectBuilder()
@@ -171,6 +170,7 @@ public final class AtnRecommenderServlet extends HttpServlet {
 		jrecommendations.add(jrecommendation);	  	
 	}
 	JsonObject jrecommendedItems = Json.createObjectBuilder()
+	    .add("userID", userID)
 			.add("recommendedItems", jrecommendations).build();    
     return jrecommendedItems.toString();
   }

@@ -1,7 +1,5 @@
 package de.fraunhofer.cortex.recommender.atn;
 
-import static org.junit.Assert.*;
-
 import java.io.File;
 import java.util.List;
 import java.util.Map;
@@ -9,8 +7,6 @@ import java.util.Map;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
-
 import org.apache.mahout.cf.taste.common.TasteException;
 import org.apache.mahout.cf.taste.model.DataModel;
 import org.apache.mahout.cf.taste.recommender.RecommendedItem;

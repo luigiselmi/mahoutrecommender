@@ -2,7 +2,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>fraunhofer</groupId>
-  <artifactId>recommender</artifactId>
+  <artifactId>mahout-recommender</artifactId>
   <packaging>war</packaging>
   <version>0.1.0-SNAPSHOT</version>
   <name>Recommender Webapp</name>

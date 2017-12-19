@@ -33,7 +33,21 @@ and then running it
     $ docker run -d -p 8100:8100 --name recommender doeeet/recommender:v0.1.0
 
 ## Use
-You can send a request to the web service using the HTML page at http://localhost:8100/ with the id of the user for which you want the recommendation and the number of items to recommend.
+You can send a request to the web service using the HTML page at http://localhost:8100/ with the id of the user for which you want the recommendation and the number of items to recommend, ore use curl
+
+    $ curl 'http://localhost:8080/recommend?format=json&userID=21585&howMany=2'
+    
+In case JSON is used as format the response will be a ranked list of items
+
+    {"userID":21585,
+         "recommendedItems": [
+                  {"itemID": "40526f54-3c60-4d87-9628-368524cff90c",
+                   "value": 3.945368528366089},
+                  {"itemID": "b352ac86-28ca-4c21-b586-c0edfa19ac0b",
+                   "value": 3.4908947944641113}
+          ]
+    }
+    
 
 ## Version
 0.1.0

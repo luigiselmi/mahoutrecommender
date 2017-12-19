@@ -39,12 +39,17 @@ You can send a request to the web service using the HTML page at http://localhos
     
 In case JSON is used as format the response will be a ranked list of items
 
-    {"userID":21585,
+    {
+     "userID":21585,
          "recommendedItems": [
-                  {"itemID": "40526f54-3c60-4d87-9628-368524cff90c",
-                   "value": 3.945368528366089},
-                  {"itemID": "b352ac86-28ca-4c21-b586-c0edfa19ac0b",
-                   "value": 3.4908947944641113}
+                  {
+                    "itemID": "40526f54-3c60-4d87-9628-368524cff90c",
+                    "value": 3.945368528366089
+                  },
+                  {
+                    "itemID": "b352ac86-28ca-4c21-b586-c0edfa19ac0b",
+                    "value": 3.4908947944641113
+                  }
           ]
     }
     

@@ -1,16 +1,14 @@
 package de.fraunhofer.cortex.recommender.cf;
 
-import java.io.File;
-
 public class ApplicationConfig {
   
-  private File signalsFile = null;
+  private String signalsFile;
   
   
-  public File getSignalsFile() {
+  public String getSignalsFile() {
     return signalsFile;
   }
-  public void setSignalsFile(File signalsFile) {
+  public void setSignalsFile(String signalsFile) {
     this.signalsFile = signalsFile;
   }
   

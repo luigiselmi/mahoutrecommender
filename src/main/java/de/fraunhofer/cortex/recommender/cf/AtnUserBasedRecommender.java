@@ -30,7 +30,7 @@ public class AtnUserBasedRecommender implements Recommender {
 	
 	public AtnUserBasedRecommender() throws IOException, TasteException {
 	  ApplicationConfig config = readConfiguration();
-	  File dataFile = config.getSignalsFile();
+	  File dataFile = new File(config.getSignalsFile());
 		dataModel = new SignalsDataModel(dataFile);
 		UserSimilarity similarity = new PearsonCorrelationSimilarity(dataModel);
 		UserNeighborhood neighborhood = new NearestNUserNeighborhood(3, similarity, dataModel);
@@ -106,19 +106,10 @@ public class AtnUserBasedRecommender implements Recommender {
    */
   private ApplicationConfig readConfiguration() throws IOException {
     ApplicationConfig config = new ApplicationConfig();
-    File signalsFile;
     Properties prop = new Properties();
     InputStream configIs = AtnUserBasedRecommender.class.getClassLoader().getResourceAsStream("config.properties");
     prop.load(configIs);
-    boolean applicationUndertest = "true".equals(prop.getProperty("application.test"));
-    if(applicationUndertest) {
-      signalsFile = new File(this.getClass().getClassLoader().getResource("signals_test.csv").getFile());
-      config.setSignalsFile(signalsFile);
-    }
-    else {
-      signalsFile = new File(prop.getProperty("signals.file"));
-      config.setSignalsFile(signalsFile);
-    }
+    config.setSignalsFile(prop.getProperty("signals.file"));
     return config;
   }
 

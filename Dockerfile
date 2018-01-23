@@ -2,15 +2,15 @@
 #
 # 1) Build an image using this docker file. Run the following docker command
 #
-#    $ docker build -t doeeet/recommender:v0.1.0 .
+#    $ docker build -t eisbonn/recommender:v0.1.0 .
 #
 # 2) Test DR in a container. Run the following docker command for testing
 #
-#    $ docker run --rm -it -p 8100:8100 --network=doeeet-net --name recommender doeeet/recommeder:v0.1.0 /bin/bash
+#    $ docker run --rm -it -p 8100:8100 --network=doeeet-net --name recommender eisbonn/recommeder:v0.1.0 /bin/bash
 #
 # 3) Start a container with DR
 #
-#    $ docker run -it -p 8100:8100 --name recommender doeeet/recommender:v0.1.0 /bin/bash 
+#    $ docker run -it -p 8100:8100 --name recommender eisbonn/recommender:v0.1.0 /bin/bash 
 #
 # 4) Within the container check that the application is well installed
 #
@@ -26,7 +26,7 @@
 #
 # 8) In order to run the container in a network (e.g. doeeet-net) use the command
 #
-#    docker run -d -p 8100:8100 --network=doeeet-net --name recommender doeeet/recommender:v0.1.0
+#    docker run -d -p 8100:8100 --network=doeeet-net --name recommender eisbonn/recommender:v0.1.0
 
 
 # Pull base image

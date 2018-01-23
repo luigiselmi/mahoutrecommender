@@ -17,6 +17,7 @@
 
 package de.fraunhofer.cortex.recommender.api;
 
+import org.apache.mahout.cf.taste.common.NoSuchUserException;
 import org.apache.mahout.cf.taste.common.TasteException;
 import org.apache.mahout.cf.taste.model.DataModel;
 import org.apache.mahout.cf.taste.model.Preference;
@@ -111,6 +112,14 @@ public final class AtnRecommenderServlet extends HttpServlet {
       writeJSON(userID, response, items);
  
     } 
+    catch (NoSuchUserException nsue) {
+      try {
+        writeJSON(userID, response, null);
+      } 
+      catch (IOException | TasteException e1) {  
+        e1.printStackTrace();
+      }
+    }
     catch (TasteException te) {
       throw new ServletException(te);
     } 
@@ -135,12 +144,14 @@ public final class AtnRecommenderServlet extends HttpServlet {
    */
   private String jsonRecommendedItem(long userID, Iterable<RecommendedItem> items) throws TasteException {
   	JsonArrayBuilder jrecommendations = Json.createArrayBuilder();
-  	for(RecommendedItem ri: items){
-  		JsonObject jrecommendation = Json.createObjectBuilder()
-  	    		  .add("itemID", model.getItemIDAsString(ri.getItemID()))
-  	    		  .add("value", ri.getValue())
-  	    		  .build();
-  		jrecommendations.add(jrecommendation);	  	
+  	if(items != null) {
+  	  for(RecommendedItem ri: items){
+  		  JsonObject jrecommendation = Json.createObjectBuilder()
+  	    	.add("itemID", model.getItemIDAsString(ri.getItemID()))
+  	    	.add("value", ri.getValue())
+  	    	.build();
+  		  jrecommendations.add(jrecommendation);	  	
+  	  }
   	}
   	JsonObject jrecommendedItems = Json.createObjectBuilder()
   	    .add("userID", userID)

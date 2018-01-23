@@ -1,5 +1,5 @@
-Doeeet Recommender
-==================
+Collaborative Filtering Recommender
+===================================
 Items are recommended to users based on collaborative filtering. The implicit feedbacks, e.g. views of details pages of items, are collected and used to recommend
 similar items to users. The recommendations are computed using algorithms from Apache Mahout. The recommendations are available as a web service. The user sends the userid and the number of items to be recommended and the service returns the items and the score. The service can use different algorithms with different data models. A servlet is started and is initialized with a data model in the web.xml file.
 
@@ -41,16 +41,16 @@ In case JSON is used as format the response will be a ranked list of items
 
     {
      "userID":21585,
-         "recommendedItems": [
-                  {
-                    "itemID": "40526f54-3c60-4d87-9628-368524cff90c",
-                    "value": 3.945368528366089
-                  },
-                  {
-                    "itemID": "b352ac86-28ca-4c21-b586-c0edfa19ac0b",
-                    "value": 3.4908947944641113
-                  }
-          ]
+     "recommendedItems": [
+	      {
+	        "itemID": "40526f54-3c60-4d87-9628-368524cff90c",
+	        "value": 3.945368528366089
+	      },
+	      {
+	        "itemID": "b352ac86-28ca-4c21-b586-c0edfa19ac0b",
+	        "value": 3.4908947944641113
+	      }
+      ]
     }
     
 

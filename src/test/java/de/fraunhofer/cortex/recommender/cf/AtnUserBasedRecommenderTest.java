@@ -1,72 +1,65 @@
-package de.fraunhofer.cortex.recommender.atn;
+package de.fraunhofer.cortex.recommender.cf;
 
-import java.io.File;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.List;
-import java.util.Map;
-
-import javax.json.Json;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObject;
 import org.apache.mahout.cf.taste.common.TasteException;
-import org.apache.mahout.cf.taste.model.DataModel;
+import org.apache.mahout.cf.taste.impl.common.LongPrimitiveIterator;
 import org.apache.mahout.cf.taste.recommender.RecommendedItem;
 import org.apache.mahout.cf.taste.recommender.Recommender;
 import org.junit.Before;
 import org.junit.Test;
 
-import junit.framework.Assert;
+import de.fraunhofer.cortex.recommender.cf.AtnUserBasedRecommender;
+import de.fraunhofer.cortex.recommender.model.SignalsDataModel;
 
-public class AtnRecommenderTest {
+/**
+ * The tests use the data in src/test/resources.
+ * The application must be configured in config.properties to 
+ * be under test.
+ */
+public class AtnUserBasedRecommenderTest {
 
-	private File dataFile;
-	private DataModel dataModel;
 	private Recommender recommender;
+	private SignalsDataModel dataModel;
 	
 	@Before
 	public void setUp() throws Exception {
-		dataFile = new File(this.getClass().getClassLoader().getResource("feedback.csv").getFile());
-		dataModel = new AtnFileDataModel(dataFile);
-		recommender = new AtnRecommender(dataModel);
+		recommender = new AtnUserBasedRecommender();
+		dataModel = (SignalsDataModel)recommender.getDataModel();
 	}
 
+	@Test
+	public void testRecommendedItem() throws TasteException {
+	  
+  	List<RecommendedItem> recommendations = recommender.recommend(35410, 2);
+  	long recommendedItemID = recommendations.get(0).getItemID();
+  	String stringRecommendedItemID = dataModel.getItemIDAsString(recommendedItemID);
+  	assertEquals("69ebc042-341a-4776-9d07-8a54c46176d1", stringRecommendedItemID);		
+	}
+	
 	@Test
 	public void testRecommendations() throws TasteException {
-		System.out.println("Number of users: " + dataModel.getNumUsers());
-		System.out.println("Number of items: " + dataModel.getNumItems());
-		System.out.println("Number of users with preferences for 29: " + dataModel.getNumUsersWithPreferenceFor(29));
-		System.out.println("Number of preferences for 29: " + dataModel.getPreferencesForItem(29));
-	
-		List<RecommendedItem> recommendations = recommender.recommend(20159, 2);
-		for(RecommendedItem i: recommendations){
-			long recommendedItemID = i.getItemID();
-			float value = i.getValue();
-			System.out.println("Recommended item: " + recommendedItemID + " value: " + value);
-		}
-	
+	  LongPrimitiveIterator userIDs = dataModel.getUserIDs();
+	  int usersWithRecommendations = 0;
+    while(userIDs.hasNext()) {
+      long usedID = userIDs.next();
+      List<RecommendedItem> recommendations = recommender.recommend(usedID, 1);
+      if( ! recommendations.isEmpty() )
+        usersWithRecommendations ++;
+    }
+    // 5 users have got recommendations when neighborhood is 3
+    assertEquals(5, usersWithRecommendations);
+	  
 	}
 	
 	@Test
-	public void testJsonRecommendations() throws TasteException {
-		List<RecommendedItem> recommendations = recommender.recommend(20159, 2);
-		JsonArrayBuilder jrecommendations = Json.createArrayBuilder();
-		for(RecommendedItem ri: recommendations){
-			JsonObject jrecommendation = Json.createObjectBuilder()
-		    		  .add("itemID", ri.getItemID())
-		    		  .add("value", ri.getValue())
-		    		  .build();
-			jrecommendations.add(jrecommendation);	  	
-		}
-		JsonObject jrecommendedItems = Json.createObjectBuilder()
-				.add("recommendedItems", jrecommendations).build();
-		System.out.println(jrecommendedItems.toString());
-		
-	}
+	public void testRecommendationsStatistics()throws TasteException {
+	  
+	  assertEquals(14, dataModel.getNumUsers());
+	  assertEquals(285, dataModel.getNumItems());
+    
+  }
 	
-	@Test
-	public void testItemIDs(){
-		Map<Long, String> mapHashToItemID = ((AtnFileDataModel) recommender.getDataModel()).getMapItemID();
-		String itemID = mapHashToItemID.get(new Long(67));
-		Assert.assertTrue("40526f54-3c60-4d87-9628-368524cff90c".equals(itemID));
-	}
-
 }

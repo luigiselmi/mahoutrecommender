@@ -37,6 +37,14 @@ public class AtnUserBasedRecommender implements Recommender {
 		recommender = new GenericUserBasedRecommender(dataModel, neighborhood, similarity);
 		LOG.info("User Based Recommender ready");
 	}
+	// Used for testing
+	public AtnUserBasedRecommender(File dataFile) throws IOException, TasteException {
+    dataModel = new SignalsDataModel(dataFile);
+    UserSimilarity similarity = new PearsonCorrelationSimilarity(dataModel);
+    UserNeighborhood neighborhood = new NearestNUserNeighborhood(3, similarity, dataModel);
+    recommender = new GenericUserBasedRecommender(dataModel, neighborhood, similarity);
+    LOG.info("User Based Recommender ready");
+  }
 
 	@Override
 	public void refresh(Collection<Refreshable> alreadyRefreshed) {

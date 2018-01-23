@@ -3,6 +3,7 @@ package de.fraunhofer.cortex.recommender.cf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.util.List;
 import org.apache.mahout.cf.taste.common.TasteException;
 import org.apache.mahout.cf.taste.impl.common.LongPrimitiveIterator;
@@ -21,12 +22,14 @@ import de.fraunhofer.cortex.recommender.model.SignalsDataModel;
  */
 public class AtnUserBasedRecommenderTest {
 
+  private File dataFile;
 	private Recommender recommender;
 	private SignalsDataModel dataModel;
 	
 	@Before
 	public void setUp() throws Exception {
-		recommender = new AtnUserBasedRecommender();
+	  dataFile = new File(this.getClass().getClassLoader().getResource("signals_test.csv").getFile());
+		recommender = new AtnUserBasedRecommender(dataFile);
 		dataModel = (SignalsDataModel)recommender.getDataModel();
 	}
 

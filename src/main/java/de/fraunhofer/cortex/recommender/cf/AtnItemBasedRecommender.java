@@ -37,6 +37,13 @@ public class AtnItemBasedRecommender implements Recommender {
     recommender = new GenericItemBasedRecommender(dataModel, similarity);
     LOG.info("Item Based Recommender ready");
   }
+  // used for testing
+  public AtnItemBasedRecommender(File dataFile) throws TasteException, IOException {
+    dataModel = new SignalsDataModel(dataFile);
+    ItemSimilarity similarity = new CachingItemSimilarity(new PearsonCorrelationSimilarity(dataModel), dataModel);
+    recommender = new GenericItemBasedRecommender(dataModel, similarity);
+    LOG.info("Item Based Recommender ready");
+  }
 
   @Override
   public void refresh(Collection<Refreshable> alreadyRefreshed) {

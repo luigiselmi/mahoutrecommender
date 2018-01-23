@@ -21,6 +21,7 @@ import org.apache.mahout.cf.taste.common.TasteException;
 import org.apache.mahout.cf.taste.model.DataModel;
 import org.apache.mahout.cf.taste.model.Preference;
 import org.apache.mahout.cf.taste.model.PreferenceArray;
+import org.apache.mahout.cf.taste.model.UpdatableIDMigrator;
 import org.apache.mahout.cf.taste.recommender.RecommendedItem;
 import org.apache.mahout.cf.taste.recommender.Recommender;
 
@@ -39,7 +40,10 @@ import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import de.fraunhofer.cortex.recommender.atn.AtnRecommender;
+
+import de.fraunhofer.cortex.recommender.cf.AtnItemBasedRecommender;
+import de.fraunhofer.cortex.recommender.cf.AtnUserBasedRecommender;
+import de.fraunhofer.cortex.recommender.model.SignalsDataModel;
 
 
 /**
@@ -49,13 +53,7 @@ import de.fraunhofer.cortex.recommender.atn.AtnRecommender;
  * <ul>
  * <li><em>userID</em>: the user ID for which to produce recommendations</li>
  * <li><em>howMany</em>: the number of recommendations to produce</li>
- * <li><em>debug</em>: (optional) output a lot of information that is useful in debugging.
- * Defaults to false, of course.</li>
- * </ul>
- *
- * <p>The response is text, and contains a list of the IDs of recommended items, in descending
- * order of relevance, one per line.</p>
- *
+ * 
  * <p>For example, you can get 10 recommendations for user 123 from the following URL (assuming
  * you are running taste in a web application running locally on port 8080):<br/>
  * {@code http://localhost:8080/taste/RecommenderServlet?userID=123&howMany=10}</p>
@@ -71,9 +69,9 @@ public final class AtnRecommenderServlet extends HttpServlet {
   private static final int NUM_TOP_PREFERENCES = 20;
   private static final int DEFAULT_HOW_MANY = 20;
 
-  private AtnRecommender recommender;
-  private Map<Long, String> mapItemIDs;
-  
+  //private AtnUserBasedRecommender recommender;
+  private AtnItemBasedRecommender recommender;
+  private SignalsDataModel model; 
 
   @Override
   public void init(ServletConfig config) throws ServletException {
@@ -89,8 +87,9 @@ public final class AtnRecommenderServlet extends HttpServlet {
       throw new ServletException(te);
     }
     
-    recommender = (AtnRecommender) RecommenderSingleton.getInstance().getRecommender();
-    mapItemIDs = recommender.getAtnFileDataModel().getMapItemID();
+    //recommender = (AtnUserBasedRecommender) RecommenderSingleton.getInstance().getRecommender();
+    recommender = (AtnItemBasedRecommender) RecommenderSingleton.getInstance().getRecommender();
+    model = (SignalsDataModel) recommender.getDataModel();
   
   }
 
@@ -105,129 +104,48 @@ public final class AtnRecommenderServlet extends HttpServlet {
     long userID = Long.parseLong(userIDString);
     String howManyString = request.getParameter("howMany");
     int howMany = howManyString == null ? DEFAULT_HOW_MANY : Integer.parseInt(howManyString);
-    boolean debug = Boolean.parseBoolean(request.getParameter("debug"));
-    String format = request.getParameter("format");
-    if (format == null) {
-      format = "text";
-    }
-    LOG.info("userID = " + userID + ", howMany = " + howMany + ", format = " + format);
+    
+    LOG.info("userID = " + userID + ", howMany = " + howMany);
     try {
       List<RecommendedItem> items = recommender.recommend(userID, howMany);
-      
-      if ("text".equals(format)) {
-        writePlainText(response, userID, debug, items);
-      } else if ("xml".equals(format)) {
-        writeXML(response, items);
-      } else if ("json".equals(format)) {
-        writeJSON(userID, response, items);
-      } else {
-        throw new ServletException("Bad format parameter: " + format);
-      }
-    } catch (TasteException te) {
+      writeJSON(userID, response, items);
+ 
+    } 
+    catch (TasteException te) {
       throw new ServletException(te);
-    } catch (IOException ioe) {
+    } 
+    catch (IOException ioe) {
       throw new ServletException(ioe);
     }
 
   }
-
-  private void writeXML(HttpServletResponse response, Iterable<RecommendedItem> items) throws IOException {
-    response.setContentType("text/xml");
-    response.setCharacterEncoding("UTF-8");
-    response.setHeader("Cache-Control", "no-cache");
-    PrintWriter writer = response.getWriter();
-    writer.print("<?xml version=\"1.0\" encoding=\"UTF-8\"?><recommendedItems>");
-    for (RecommendedItem recommendedItem : items) {
-      writer.print("<item><value>");
-      writer.print(recommendedItem.getValue());
-      writer.print("</value><id>");
-      writer.print(mapItemIDs.get(new Long(recommendedItem.getItemID())));
-      writer.print("</id></item>");
-    }
-    writer.println("</recommendedItems>");
-  }
   
-  private void writeJSON(long userID, HttpServletResponse response, Iterable<RecommendedItem> items) throws IOException {
+  private void writeJSON(long userID, HttpServletResponse response, Iterable<RecommendedItem> items) throws IOException, TasteException {
     response.setContentType("application/json");
     response.setCharacterEncoding("UTF-8");
     response.setHeader("Cache-Control", "no-cache");
     PrintWriter writer = response.getWriter();
-    
     writer.println(jsonRecommendedItem(userID, items));
   }
   /**
    * Serialize the list of recommended items in json 
    * @param items
    * @return
+   * @throws TasteException 
    */
-  private String jsonRecommendedItem(long userID, Iterable<RecommendedItem> items) {
-	JsonArrayBuilder jrecommendations = Json.createArrayBuilder();
-	for(RecommendedItem ri: items){
-		JsonObject jrecommendation = Json.createObjectBuilder()
-	    		  .add("itemID", mapItemIDs.get(new Long(ri.getItemID())))
-	    		  .add("value", ri.getValue())
-	    		  .build();
-		jrecommendations.add(jrecommendation);	  	
-	}
-	JsonObject jrecommendedItems = Json.createObjectBuilder()
-	    .add("userID", userID)
-			.add("recommendedItems", jrecommendations).build();    
-    return jrecommendedItems.toString();
-  }
-  
-  private void writePlainText(HttpServletResponse response,
-                              long userID,
-                              boolean debug,
-                              Iterable<RecommendedItem> items) throws IOException, TasteException {
-    response.setContentType("text/plain");
-    response.setCharacterEncoding("UTF-8");
-    response.setHeader("Cache-Control", "no-cache");
-    PrintWriter writer = response.getWriter();
-    if (debug) {
-      writeDebugRecommendations(userID, items, writer);
-    } else {
-      writeRecommendations(items, writer);
-    }
-  }
-
-  private void writeRecommendations(Iterable<RecommendedItem> items, PrintWriter writer) {
-    for (RecommendedItem recommendedItem : items) {
-      writer.print(recommendedItem.getValue());
-      writer.print('\t');
-      writer.println(mapItemIDs.get(new Long(recommendedItem.getItemID())));
-    }
-  }
-
-  private void writeDebugRecommendations(long userID, Iterable<RecommendedItem> items, PrintWriter writer)
-    throws TasteException {
-    DataModel dataModel = recommender.getDataModel();
-    writer.print("User:");
-    writer.println(userID);
-    writer.print("Recommender: ");
-    writer.println(recommender);
-    writer.println();
-    writer.print("Top ");
-    writer.print(NUM_TOP_PREFERENCES);
-    writer.println(" Preferences:");
-    PreferenceArray rawPrefs = dataModel.getPreferencesFromUser(userID);
-    int length = rawPrefs.length();
-    PreferenceArray sortedPrefs = rawPrefs.clone();
-    sortedPrefs.sortByValueReversed();
-    // Cap this at NUM_TOP_PREFERENCES just to be brief
-    int max = Math.min(NUM_TOP_PREFERENCES, length);
-    for (int i = 0; i < max; i++) {
-      Preference pref = sortedPrefs.get(i);
-      writer.print(pref.getValue());
-      writer.print('\t');
-      writer.println(pref.getItemID());
-    }
-    writer.println();
-    writer.println("Recommendations:");
-    for (RecommendedItem recommendedItem : items) {
-      writer.print(recommendedItem.getValue());
-      writer.print('\t');
-      writer.println(mapItemIDs.get(new Long(recommendedItem.getItemID())));
-    }
+  private String jsonRecommendedItem(long userID, Iterable<RecommendedItem> items) throws TasteException {
+  	JsonArrayBuilder jrecommendations = Json.createArrayBuilder();
+  	for(RecommendedItem ri: items){
+  		JsonObject jrecommendation = Json.createObjectBuilder()
+  	    		  .add("itemID", model.getItemIDAsString(ri.getItemID()))
+  	    		  .add("value", ri.getValue())
+  	    		  .build();
+  		jrecommendations.add(jrecommendation);	  	
+  	}
+  	JsonObject jrecommendedItems = Json.createObjectBuilder()
+  	    .add("userID", userID)
+  			.add("recommendedItems", jrecommendations).build();    
+      return jrecommendedItems.toString();
   }
 
   @Override

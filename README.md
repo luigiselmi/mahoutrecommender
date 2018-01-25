@@ -1,7 +1,8 @@
 Collaborative Filtering Recommender
 ===================================
 Items are recommended to users based on collaborative filtering. The implicit feedbacks, e.g. views of details pages of items, are collected and used to recommend
-similar items to users. The recommendations are computed using algorithms from Apache Mahout. The recommendations are available as a web service. The user sends the userid and the number of items to be recommended and the service returns the items and the score. The service can use different algorithms with different data models. A servlet is started and is initialized with a data model in the web.xml file.
+similar items to users. The recommendations are computed using algorithms from Apache Mahout. The data used by Mahout for the collaborative filtering must contain for each record the userID (long),
+the itemID (long) and a value (double). Nonetheless the itemIDs are assumed to be of type string. Mahout provides a special hash map with the mappings between the string Id and the numeric Id. The data model is built from the user navigation log files using the code in the [producer repository|https://github.com/luigiselmi/mahoutdataproducer]. The file containing the aggregated records must be set in the config.properties file. The recommendations are available as a web service. The user sends the userid and the number of items to be recommended and the service returns the items and the score. The service can use different algorithms with different data models. A servlet is started and is initialized with a data model in the web.xml file.
 
 ## Prerequisites 
 You need Java 8 and Maven to build the code. Jetty is used as a servlet container.
@@ -24,13 +25,19 @@ In case Jetty is used as a servlet container you can create a base for Jetty, as
     $ java -jar $JETTY_HOME/start.jar jetty.http.port=8100
 
 ### Docker container
-You can run the recommender within a docker container by first building the container 
+In order to use the docker container you first need to create the volume containing the data. This can be done creating a container that maps the path of the file in the host machine (e.g. /home/dataproducer/signals.csv) to the path set in the config.properties file where the recommender running in the container will look for the data (e.g /recommender/signals.csv). The volume container can be based on a small linux docker image such as alpine. It must be a member of the same docker network of the container with the recommender (e.g. doeeet-net). The network must be created before the containers. 
+
+    $ docker run -it -v /home/dataproducer/signals.csv:/recommender/signals.csv:ro --network=doeeet-net --name mahout-data alpine /bin/sh 
+
+After the execution of the command you can see the file in the volume container in /recommender/signals.csv. You can leave the volume container typing Ctrl+P and Ctrl+Q. 
+
+You can build the docker image with the recommender using the Dockerfile provided in this repository executing the command
 
     $ docker build -t doeeet/recommender:v0.1.0 .
 
-and then running it
+After the image is built you can run it passing the name of the volume where it can reach the data and the name of the network it will be a member of.
 
-    $ docker run -d -p 8100:8100 --name recommender doeeet/recommender:v0.1.0
+    $ docker run -d -p 8100:8100 --volumes-from mahout-data --network=doeeet-net --name recommender doeeet/recommender:v0.1.0
 
 ## Use
 You can send a request to the web service using the HTML page at http://localhost:8100/ with the id of the user for which you want the recommendation and the number of items to recommend, ore use curl

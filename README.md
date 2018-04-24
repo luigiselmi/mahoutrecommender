@@ -1,8 +1,16 @@
 Collaborative Filtering Recommender
 ===================================
-Items are recommended to users based on collaborative filtering. The implicit feedbacks, e.g. views of details pages of items, are collected and used to recommend
-similar items to users. The recommendations are computed using algorithms from Apache Mahout. The data used by Mahout for the collaborative filtering must contain for each record the userID (long),
-the itemID (long) and a value (double). Nonetheless the itemIDs are assumed to be of type string. Mahout provides a special hash map with the mappings between the string Id and the numeric Id. The data model is built from the user navigation log files using the code in the [producer repository](https://github.com/luigiselmi/mahoutdataproducer). The file containing the aggregated records must be set in the config.properties file. The recommendations are available as a web service. The user sends the userid and the number of items to be recommended and the service returns the items and the score. The service can use different algorithms with different data models. A servlet is started and is initialized with a data model in the web.xml file.
+Items are recommended to users based on collaborative filtering. The implicit feedbacks, e.g. views of details pages of items, 
+are collected and used to recommend similar items to users. The recommendations are computed using algorithms from Apache Mahout. 
+The data used by Mahout for the collaborative filtering must contain for each record the userID (long), the itemID (long) and a 
+value (double). Nonetheless the itemIDs are assumed to be of type string. Mahout provides a special hash map with the mappings 
+between the string Id and the numeric Id. The data model is built from the user navigation log files using the code in the 
+[producer repository](https://github.com/luigiselmi/mahoutdataproducer). The file containing the aggregated records must be set 
+in the config.properties file. The recommendations are available as a web service. The user sends the userid and the number of 
+items to be recommended and the service returns the items and the score. The service can use different algorithms with different 
+data models. A servlet is started and is initialized with a data model in the web.xml file. The signals are read from a base file, 
+e.g. signals.csv, and from other files in the same folder whose name begins in the same way as the base file, say signals-20180424.csv. 
+The signals data are kept in a Mahout [FileDataModel](https://mahout.apache.org/docs/0.13.0/api/docs/mahout-mr/org/apache/mahout/cf/taste/impl/model/file/FileDataModel.html) and are reloaded after a certain time interval, if there has been a change.
 
 ## Prerequisites 
 You need Java 8 and Maven to build the code. Jetty is used as a servlet container.

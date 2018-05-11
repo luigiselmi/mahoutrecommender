@@ -50,9 +50,9 @@ After the image is built you can run it passing the name of the volume where it 
 ## Use
 You can send a request to the web service using the HTML page at http://localhost:8100/ with the id of the user for which you want the recommendation and the number of items to recommend, ore use curl
 
-    $ curl 'http://localhost:8080/recommend?format=json&userID=21585&howMany=2'
+    $ curl 'http://localhost:8080/recommend?userID=21585&howMany=2'
     
-In case JSON is used as format the response will be a ranked list of items
+The response is a JSON stream with a ranked list of recommended items 
 
     {
      "userID":21585,

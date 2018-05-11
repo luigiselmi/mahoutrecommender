@@ -16,9 +16,26 @@
     <load-on-startup>1</load-on-startup>
   </servlet>
   
+  <servlet>
+    <servlet-name>atn-refresh-recommender</servlet-name>
+    <display-name>ATN Refresh Recommender</display-name>
+    <description>ATN refresh recommender servlet</description>
+    <servlet-class>de.fraunhofer.cortex.recommender.api.AtnRecommenderRefreshServlet</servlet-class>
+    <init-param>
+      <param-name>recommender-class</param-name>
+      <param-value>de.fraunhofer.cortex.recommender.cf.AtnItemBasedRecommender</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  
   <servlet-mapping>
     <servlet-name>atn-recommender</servlet-name>
     <url-pattern>/recommend</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>atn-refresh-recommender</servlet-name>
+    <url-pattern>/refresh</url-pattern>
   </servlet-mapping>
   
   <session-config>

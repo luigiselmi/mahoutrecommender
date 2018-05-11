@@ -10,7 +10,9 @@ in the config.properties file. The recommendations are available as a web servic
 items to be recommended and the service returns the items and the score. The service can use different algorithms with different 
 data models. A servlet is started and is initialized with a data model in the web.xml file. The signals are read from a base file, 
 e.g. signals.csv, and from other files in the same folder whose name begins in the same way as the base file, say signals-20180424.csv. 
-The signals data are kept in a Mahout [FileDataModel](https://mahout.apache.org/docs/0.13.0/api/docs/mahout-mr/org/apache/mahout/cf/taste/impl/model/file/FileDataModel.html) and are reloaded after a certain time interval, if there has been a change.
+The signals data are kept in a Mahout [FileDataModel](https://mahout.apache.org/docs/0.13.0/api/docs/mahout-mr/org/apache/mahout/cf/taste/impl/model/file/FileDataModel.html) sending a request to the refresh API.
+If a new signal files have been created and the last refresh was before the minimum reload interval time the data model is reloaded 
+and the recommendations updated.
 
 ## Prerequisites 
 You need Java 8 and Maven to build the code. Jetty is used as a servlet container.
@@ -50,7 +52,7 @@ After the image is built you can run it passing the name of the volume where it 
 ## Use
 You can send a request to the web service using the HTML page at http://localhost:8100/ with the id of the user for which you want the recommendation and the number of items to recommend, ore use curl
 
-    $ curl 'http://localhost:8080/recommend?userID=21585&howMany=2'
+    $ curl 'http://localhost:8100/recommend?userID=21585&howMany=2'
     
 The response is a JSON stream with a ranked list of recommended items 
 
@@ -68,7 +70,12 @@ The response is a JSON stream with a ranked list of recommended items
       ]
     }
     
+In order to update the recommendations when a new signal file is available you can send the following request to the recommender
 
+    $ curl 'http://localhost:8100/refresh'
+
+The recommender will reply with a message containing the updated number of users and items.
+ 
 ## Version
 0.1.0
 

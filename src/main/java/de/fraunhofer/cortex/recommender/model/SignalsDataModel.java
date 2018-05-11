@@ -30,11 +30,10 @@ import org.apache.mahout.cf.taste.model.UpdatableIDMigrator;
 public class SignalsDataModel extends FileDataModel {
   public static final String COLON_DELIMTER = ",";
   public ItemMemIDMigrator itemIdMigrator;
-  private Set<String> stringIDs = null;
   
-  public SignalsDataModel(File dataFile) throws IOException, TasteException {
+  public SignalsDataModel(File dataFile, long reloadIntervalMillis) throws IOException, TasteException {
     
-    super(dataFile, COLON_DELIMTER); 
+    super(dataFile, false, reloadIntervalMillis, COLON_DELIMTER); 
     
   }
   

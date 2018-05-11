@@ -27,11 +27,12 @@ public class AtnUserBasedRecommender implements Recommender {
 	static final Logger LOG = LoggerFactory.getLogger(AtnUserBasedRecommender.class);
 	private final Recommender recommender;
 	private SignalsDataModel dataModel;
+	private long minReloadIntervalMillis = 60000L;
 	
 	public AtnUserBasedRecommender() throws IOException, TasteException {
 	  ApplicationConfig config = readConfiguration();
 	  File dataFile = new File(config.getSignalsFile());
-		dataModel = new SignalsDataModel(dataFile);
+		dataModel = new SignalsDataModel(dataFile, minReloadIntervalMillis);
 		UserSimilarity similarity = new PearsonCorrelationSimilarity(dataModel);
 		UserNeighborhood neighborhood = new NearestNUserNeighborhood(3, similarity, dataModel);
 		recommender = new GenericUserBasedRecommender(dataModel, neighborhood, similarity);
@@ -39,7 +40,7 @@ public class AtnUserBasedRecommender implements Recommender {
 	}
 	// Used for testing
 	public AtnUserBasedRecommender(File dataFile) throws IOException, TasteException {
-    dataModel = new SignalsDataModel(dataFile);
+    dataModel = new SignalsDataModel(dataFile, minReloadIntervalMillis);
     UserSimilarity similarity = new PearsonCorrelationSimilarity(dataModel);
     UserNeighborhood neighborhood = new NearestNUserNeighborhood(3, similarity, dataModel);
     recommender = new GenericUserBasedRecommender(dataModel, neighborhood, similarity);

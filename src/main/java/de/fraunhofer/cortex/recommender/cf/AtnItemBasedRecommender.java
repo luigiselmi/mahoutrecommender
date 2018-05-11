@@ -32,14 +32,19 @@ public class AtnItemBasedRecommender implements Recommender {
   public AtnItemBasedRecommender() throws TasteException, IOException {
     ApplicationConfig config = readConfiguration();
     File dataFile = new File(config.getSignalsFile());
-    dataModel = new SignalsDataModel(dataFile);
+    long minReloadIntervalMillis = Long.parseLong(config.getMinReloadIntervalMillis());
+    dataModel = new SignalsDataModel(dataFile, minReloadIntervalMillis);
     ItemSimilarity similarity = new CachingItemSimilarity(new PearsonCorrelationSimilarity(dataModel), dataModel);
     recommender = new GenericItemBasedRecommender(dataModel, similarity);
-    LOG.info("Item Based Recommender ready");
+    int numItems = dataModel.getNumItems();
+    int numUsers = dataModel.getNumUsers();
+    LOG.info("Item Based Recommender ready. Number of users: " + numUsers + ", number of items: " + numItems);
   }
   // used for testing
   public AtnItemBasedRecommender(File dataFile) throws TasteException, IOException {
-    dataModel = new SignalsDataModel(dataFile);
+	ApplicationConfig config = readConfiguration(); 
+	long minReloadIntervalMillis = Long.parseLong(config.getMinReloadIntervalMillis());
+    dataModel = new SignalsDataModel(dataFile, minReloadIntervalMillis);
     ItemSimilarity similarity = new CachingItemSimilarity(new PearsonCorrelationSimilarity(dataModel), dataModel);
     recommender = new GenericItemBasedRecommender(dataModel, similarity);
     LOG.info("Item Based Recommender ready");
@@ -109,6 +114,7 @@ public class AtnItemBasedRecommender implements Recommender {
     InputStream configIs = AtnItemBasedRecommender.class.getClassLoader().getResourceAsStream("config.properties");
     prop.load(configIs);
     config.setSignalsFile(prop.getProperty("signals.file"));
+    config.setMinReloadIntervalMillis(prop.getProperty("signals.min_reload_interval_ms"));
     return config;
   }
 }

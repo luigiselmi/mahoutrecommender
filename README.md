@@ -10,8 +10,8 @@ in the config.properties file. The recommendations are available as a web servic
 items to be recommended and the service returns the items and the score. The service can use different algorithms with different 
 data models. A servlet is started and is initialized with a data model in the web.xml file. The signals are read from a base file, 
 e.g. signals.csv, and from other files in the same folder whose name begins in the same way as the base file, say signals-20180424.csv. 
-The signals data are kept in a Mahout [FileDataModel](https://mahout.apache.org/docs/0.13.0/api/docs/mahout-mr/org/apache/mahout/cf/taste/impl/model/file/FileDataModel.html) sending a request to the refresh API.
-If a new signal files have been created and the last refresh was before the minimum reload interval time the data model is reloaded 
+The signals data are kept in a Mahout [FileDataModel](https://mahout.apache.org/docs/0.13.0/api/docs/mahout-mr/org/apache/mahout/cf/taste/impl/model/file/FileDataModel.html).
+If a new signal file has been created and the last refresh was before the minimum reload interval time, the data model is reloaded 
 and the recommendations updated.
 
 ## Prerequisites 

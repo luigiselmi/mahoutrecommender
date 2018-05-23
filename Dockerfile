@@ -6,27 +6,17 @@
 #
 # 2) Test DR in a container. Run the following docker command for testing
 #
-#    $ docker run --rm -it -p 8100:8100 --network=doeeet-net --name recommender eisbonn/recommeder:v0.1.0 /bin/bash
+#    $ docker run --rm -it -v /storage/mahout:/storage mahout -p 8100:8100 --network=doeeet-net --name recommender eisbonn/recommender:v0.1.0 /bin/bash
 #
-# 3) Start a container with DR
+#    Check that the signal files are available in the docker volume
 #
-#    $ docker run -it -p 8100:8100 --name recommender eisbonn/recommender:v0.1.0 /bin/bash 
+# 3) In order to run the container in a network (e.g. doeeet-net) use the command
 #
-# 4) Within the container check that the application is well installed
+#    docker run -d -v /storage/mahout:/storage/mahout -p 8100:8100 --network=doeeet-net --name recommender eisbonn/recommender:v0.1.0
 #
-# 5) Detach from the container with Ctrl-p Ctrl-q
-#
-# 6) The container can be started in detached mode executing the command
-#
-#    $ docker run -d -p 8100:8100 --name recommender doeeet/recommender:v0.1.0
-#
-# 7) The container can be inspected using the command
+# 4) The container can be inspected using the command
 #
 #    $ docker exec -it recommender /bin/bash
-#
-# 8) In order to run the container in a network (e.g. doeeet-net) use the command
-#
-#    docker run -d -p 8100:8100 --network=doeeet-net --name recommender eisbonn/recommender:v0.1.0
 
 
 # Pull base image
@@ -72,6 +62,12 @@ RUN wget http://central.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.
     cd frameworks && \
     mkdir jetty && \
     mv /tmp/jetty-distribution-9.4.7.v20170914 /opt/frameworks/jetty/jetty-9.4.7
+
+# Create the folder for the data volume that will contain the signal files
+WORKDIR /
+RUN mkdir storage && \
+    cd storage && \
+    mkdir mahout
 
 # Install the recommender web application
 COPY target/doeeetrecommender.war /opt/frameworks/jetty/jetty-9.4.7/webapps/ROOT.war

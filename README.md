@@ -30,27 +30,30 @@ The recommender is a web service and it must be packaged as a war file and insta
 You can run the recommender as a Java Web application in a servlet container such as Jetty or in a docker container.
 
 ### Java Web Application
-In case Jetty is used as a servlet container you can create a base for Jetty, as explained in the [Jetty documentation](https://www.eclipse.org/jetty/documentation/current/quickstart-running-jetty.html), and copy the war file in the webapps folder. You can rename the war file as ROOT.war so you will not need to use a context. From the Jetty base folder execute the command
+In case Jetty is used as a servlet container you can create a base for Jetty, as explained in the [Jetty documentation](https://www.eclipse.org/jetty/documentation/current/quickstart-running-jetty.html), 
+and copy the war file in the webapps folder. You can rename the war file as ROOT.war so you will not need to use a context. 
+From the Jetty base folder execute the command
 
     $ java -jar $JETTY_HOME/start.jar jetty.http.port=8100
 
 ### Docker container
-In order to use the docker container you first need to create the volume containing the data. This can be done creating a container that maps the path of the file in the host machine (e.g. /home/dataproducer/signals.csv) to the path set in the config.properties file where the recommender running in the container will look for the data (e.g /recommender/signals.csv). The volume container can be based on a small linux docker image such as alpine. It must be a member of the same docker network of the container with the recommender (e.g. doeeet-net). The network must be created before the containers. 
-
-    $ docker run -it -v /home/dataproducer/signals.csv:/recommender/signals.csv:ro --network=doeeet-net --name mahout-data alpine /bin/sh 
-
-After the execution of the command you can see the file in the volume container in /recommender/signals.csv. You can leave the volume container typing Ctrl+P and Ctrl+Q. 
-
-You can build the docker image with the recommender using the Dockerfile provided in this repository executing the command
+You can build the recommender's docker image using the Dockerfile provided in this repository executing the command
 
     $ docker build -t doeeet/recommender:v0.1.0 .
 
-After the image is built you can run it passing the name of the volume where it can reach the data and the name of the network it will be a member of.
+In order to run the docker container you need to specify the docker volume containing the signals files with the mapping from the folder in 
+the host machine (e.g. /storage/mahout ) to the folder in the container where the recommender will look for the data (e.g. the same as in 
+the host machine).
 
-    $ docker run -d -p 8100:8100 --volumes-from mahout-data --network=doeeet-net --name recommender doeeet/recommender:v0.1.0
+    $ docker run -d -v /storage/mahout:/storage/mahout -p 8100:8100 --network=doeeet-net --name recommender doeeet/recommender:v0.1.0
+
+The running container can be inspected using the command
+
+    $ docker exec -it recommender /bin/bash
 
 ## Use
-You can send a request to the web service using the HTML page at http://localhost:8100/ with the id of the user for which you want the recommendation and the number of items to recommend, ore use curl
+You can send a request to the web service using the HTML page at http://localhost:8100/ with the id of the user for which you want the 
+recommendation and the number of items to recommend, ore use curl
 
     $ curl 'http://localhost:8100/recommend?userID=21585&howMany=2'
     
@@ -70,7 +73,8 @@ The response is a JSON stream with a ranked list of recommended items
       ]
     }
     
-In order to update the recommendations when a new signal file is available you can send the following request to the recommender
+In order to update the recommendations when a new signal file is available in the signal folder you can send the following request to 
+the recommender
 
     $ curl 'http://localhost:8100/refresh'
 

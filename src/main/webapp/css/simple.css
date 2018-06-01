@@ -1,0 +1,80 @@
+/*
+STYLE SHEET FOR datiaperti.it
+Created by Luigi Selmi June 1st 2018
+ToC
+1. defaults
+2. structure
+Notes:
+This stylesheet has only three elements, a wrapper and a content element and footer within it
+*/
+/* --------- 1. defaults --------- */
+* {
+  margin: 0;
+  padding: 0;
+}
+html {
+  font-size: 100%;
+}
+
+body {
+  font: 62.5%/1.5 Verdana, Arial, Helvetica, sans-serif;
+  color: black;
+  background: white;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin-right: 100px;
+  margin-left: 100px;
+}
+
+img#logo {
+  display: block;
+  margin-top: 20px;
+  margin-bottom: 20px;
+      margin-left: auto;
+      margin-right: auto;
+}
+/*
+The wrapper element contains all the elements of the page. All other elements must be put within the wrapper
+*/
+#wrapper { 
+  border-style: solid;
+  border-width: 0px;
+  padding-top: 25px;
+  padding-bottom: 25px;
+  padding-right: 10%;
+  padding-left: 10%;
+  background: white;
+  width: 80%;
+}
+
+/* --------- 2. structure --------- */
+#mainColumn  {
+  margin: 0px;
+  border-style:solid;
+  border-width: 0px;
+  padding-top:25px;
+  padding-bottom:10px;
+  padding-right:50px;
+  padding-left:50px;
+
+}
+
+p#quote {
+
+  font-family: Arial, Helvetica, sans-serif;
+  font-style: italic;
+  font-size: 20px;
+  line-height: 1.5em;
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
+
+#footer {
+  text-align: center;
+  border-style: solid;
+  border-width: 0px;
+  margin-top: 200px;
+  margin-bottom: 10px;
+  padding-top: 10px;
+  padding-bottom:10px;
+}

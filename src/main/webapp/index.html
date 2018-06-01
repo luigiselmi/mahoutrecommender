@@ -1,12 +1,34 @@
 <html>
+<head>
+  <link rel="stylesheet" type="text/css" href="css/simple.css">
+</head>
 <body>
-<h2>ATN Recommender System</h2>
-<form action="/recommend" method="get">
- User Id:<br>
-  <input type="text" name="userID"><br>
- Number of Items:<br>
-  <input type="text" name="howMany"><br>
-  <input type="submit" value="Submit"><br>
-</form>
+<div id="wrapper">
+  <div id="top">
+    <img id="logo" alt="Alter Technology" width="192" height="108" src="images/logo-altertechnology.jpg">
+    <h2>ATN Recommender System</h2>
+  </div>
+  <div id="main">
+	  <div id="recommend">
+	    <p>Recommendations for users</p>
+		  <form action="/recommend" method="get">
+		    User Id:<br>
+		    <input type="text" name="userID"><br>
+		    Number of Items:<br>
+		    <input type="text" name="howMany"><br>
+		    <input type="submit" value="Submit"><br>
+		  </form>
+	  </div>
+	  <div id="refresh">
+	  <p>Refresh the recommendations when new signals from the logs are available.</p>
+		  <form action="/refresh">
+		    <input type="submit" value="Refresh"><br>
+		  </form>
+	  </div>
+  </div>
+  <div id="footer">
+     2018
+  </div>
+</div>
 </body>
 </html>
